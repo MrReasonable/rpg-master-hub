@@ -1,5 +1,9 @@
 {
     "name": "web",
+    "author": {
+        "name": "MrReasonable"
+    },
+    "private": true,
     "type": "module",
     "scripts": {
         "dev": "vinxi dev",

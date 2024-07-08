@@ -1,7 +1,7 @@
 import globals from 'globals'
 import pluginJs from '@eslint/js'
 import tseslint from 'typescript-eslint'
-import baseConfig from '../../eslint.config.mjs'
+import baseConfig from '../../eslint.config.js'
 import solid from 'eslint-plugin-solid'
 import * as tsParser from '@typescript-eslint/parser'
 import jsxA11y from 'eslint-plugin-jsx-a11y'

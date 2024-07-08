@@ -2,6 +2,13 @@
     "name": "rpg-master-hub",
     "version": "1.0.0",
     "description": "",
+    "private": true,
+    "licenses": [
+        {
+            "type": "UNLICENSED",
+            "url": "https://spdx.org/licenses/UNLICENSED.html"
+        }
+    ],
     "type": "module",
     "scripts": {
         "dev": "pnpm run -r dev",
@@ -12,8 +19,9 @@
         "prepare": "husky"
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": {
+        "name": "MrReasonable"
+    },
     "devDependencies": {
         "@eslint/js": "^9.6.0",
         "@types/eslint-config-prettier": "^6.11.3",
