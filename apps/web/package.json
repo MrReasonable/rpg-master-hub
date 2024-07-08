@@ -6,9 +6,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vinxi dev",
+        "start:dev": "vinxi dev",
+        "start:debug": "vinxi dev --devtools",
+        "start:prod": "vinxi start",
         "build": "vinxi build",
-        "start": "vinxi start",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix"
     },

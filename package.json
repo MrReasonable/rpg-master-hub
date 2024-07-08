@@ -11,7 +11,9 @@
     ],
     "type": "module",
     "scripts": {
-        "dev": "pnpm run -r dev",
+        "start:dev": "pnpm run -r start:dev",
+        "start:debug": "pnpm run -r start:debug",
+        "start:prod": "pnpm run -r start:prod",
         "lint": "pnpm eslint . && pnpm run -r lint",
         "lint:fix": "pnpm eslint . --fix && pnpm run -r lint:fix",
         "format:check": "pnpm prettier -l .",
