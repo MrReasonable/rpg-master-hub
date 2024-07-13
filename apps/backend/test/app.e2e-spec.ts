@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '~/app.module'
-import { Http2Server } from 'http2'
+import { Http2Server } from 'node:http2'
 
 describe('AppController (e2e)', () => {
     let app: INestApplication<Http2Server>

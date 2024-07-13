@@ -7,45 +7,61 @@ import eslintPluginYml from 'eslint-plugin-yml'
 import markdown from 'eslint-plugin-markdown'
 import jest from 'eslint-plugin-jest'
 import tsEslint from 'typescript-eslint'
-import tsPlugin from '@typescript-eslint/eslint-plugin'
 import eslintNestJs from 'eslint-config-nestjs'
 import solid from 'eslint-plugin-solid'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import tailwind from 'eslint-plugin-tailwindcss'
 import tsParser from '@typescript-eslint/parser'
+import unicorn from 'eslint-plugin-unicorn'
+import sonarjs from 'eslint-plugin-sonarjs'
 
-import { dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // mimic CommonJS variables -- not needed if using CommonJS
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const gitignorePath = resolve(__dirname, '.gitignore')
-const backendDir = '**/apps/backend'
-const webDir = '**/apps/web'
+const __dirname = path.dirname(__filename)
+const gitignorePath = path.resolve(__dirname, '.gitignore')
+const backendPath = '/apps/backend'
+const webPath = '/apps/web'
 
 const compat = new FlatCompat({
     baseDirectory: __dirname,
 })
 
-const testFiles = ['js', 'ts', 'tsx'].flatMap((ext) =>
-    ['test', 'spec'].map((suffix) => `**/*.${suffix}.${ext}`)
+const javascriptFileExtensions = ['js', 'jsx', 'cjs', 'mjs']
+const typescriptFileExtensions = ['ts', 'tsx']
+const testFileSuffixes = ['test', 'spec']
+
+const javascriptTestFileExtensions = javascriptFileExtensions.flatMap(
+    (extension) => testFileSuffixes.map((suffix) => `${suffix}.${extension}`)
 )
-const typescriptFiles = ['ts', 'tsx'].map((ext) => `**/*.${ext}`)
+
+const typescriptTestFileExtensions = typescriptFileExtensions.flatMap(
+    (extension) => testFileSuffixes.map((suffix) => `${suffix}.${extension}`)
+)
+
+const testFileExtensions = [
+    ...javascriptTestFileExtensions,
+    ...typescriptTestFileExtensions,
+]
+const allTypescriptExtensions = [
+    ...typescriptFileExtensions,
+    ...typescriptTestFileExtensions,
+]
+
+const flatRecommendedConfig = 'flat/recommended'
 
 /**  @type {import("eslint").Linter.Config} */
 export default [
     includeIgnoreFile(gitignorePath),
     pluginJs.configs.recommended,
     ...tsEslint.configs.strictTypeChecked.map((config) => ({
-        files: typescriptFiles,
+        files: typescriptFileExtensions.map((extension) => `**/*.${extension}`),
         ...config,
     })),
     {
-        files: typescriptFiles,
-        plugins: {
-            '@typescript-eslint': tsPlugin,
-        },
+        files: typescriptFileExtensions.map((extension) => `**/*.${extension}`),
         languageOptions: {
             parserOptions: {
                 project: true,
@@ -54,8 +70,8 @@ export default [
         },
     },
     {
-        files: testFiles,
-        ...jest.configs['flat/recommended'],
+        files: testFileExtensions.map((extension) => `**/*.${extension}`),
+        ...jest.configs[flatRecommendedConfig],
     },
     {
         files: ['**/*.json'],
@@ -68,16 +84,20 @@ export default [
         },
         processor: 'markdown/markdown',
     },
-    ...eslintPluginYml.configs['flat/recommended'].map((config) => ({
+    ...eslintPluginYml.configs[flatRecommendedConfig].map((config) => ({
         files: ['**/*.yml'],
         ...config,
     })),
     ...compat.config(eslintNestJs).map((config) => ({
-        files: typescriptFiles.map((ext) => `${backendDir}/**/*.${ext}`),
+        files: allTypescriptExtensions.map(
+            (extension) => `${backendPath}/**/*.${extension}`
+        ),
         ...config,
     })),
     {
-        files: typescriptFiles.map((ext) => `${webDir}/**/*.${ext}`),
+        files: typescriptFileExtensions.map(
+            (extension) => `${webPath}/**/*.${extension}`
+        ),
         ...solid.configs['flat/typescript'],
         ...jsxA11y.flatConfigs.strict,
         languageOptions: {
@@ -88,6 +108,18 @@ export default [
             },
         },
     },
-    ...tailwind.configs['flat/recommended'],
+    {
+        ...unicorn.configs[flatRecommendedConfig],
+        rules: {
+            'unicorn/prevent-abbreviations': [
+                'error',
+                {
+                    ignore: ['.*e2e.*$', /^ignore/i],
+                },
+            ],
+        },
+    },
+    sonarjs.configs['recommended'],
+    ...tailwind.configs[flatRecommendedConfig],
     eslintConfigPrettier,
 ]

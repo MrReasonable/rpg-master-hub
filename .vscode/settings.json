@@ -7,5 +7,6 @@
     "files.associations": {
         "*.css": "postcss"
     },
-    "prettier.requireConfig": false
+    "prettier.requireConfig": false,
+    "eslint.useFlatConfig": true
 }
